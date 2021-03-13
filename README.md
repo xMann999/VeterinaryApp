@@ -1,7 +1,7 @@
 # VeterinaryApp
 
 Simple VeterinaryApp built with usage of SpringMVC, SpringBoot, Hibernate.
-The application is created to learn the above mentioned technologies.
+The application is created to learn the mentioned technologies.
 
 ## Functionalities
 - Create Visit, Vet and Animal.
