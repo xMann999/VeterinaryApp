@@ -1,0 +1,60 @@
+pl/gr/veterinaryapp/controller/rest/VetRestController.java
+ pl.gr.veterinaryapp.controller.rest.VetRestController
+pl/gr/veterinaryapp/controller/rest/VisitRestController.java
+ pl.gr.veterinaryapp.controller.rest.VisitRestController
+pl/gr/veterinaryapp/controller/thyme/VetThymeController.java
+ pl.gr.veterinaryapp.controller.thyme.VetThymeController
+pl/gr/veterinaryapp/VeterinaryAppApplication.java
+ pl.gr.veterinaryapp.VeterinaryAppApplication
+pl/gr/veterinaryapp/service/impl/VetServiceImpl.java
+ pl.gr.veterinaryapp.service.impl.VetServiceImpl
+pl/gr/veterinaryapp/exception/FailedOperationException.java
+ pl.gr.veterinaryapp.exception.FailedOperationException
+pl/gr/veterinaryapp/mapper/AnimalMapper.java
+ pl.gr.veterinaryapp.mapper.AnimalMapper
+pl/gr/veterinaryapp/model/dto/VisitResponseDto.java
+ pl.gr.veterinaryapp.model.dto.VisitResponseDto
+pl/gr/veterinaryapp/common/VisitType.java
+ pl.gr.veterinaryapp.common.VisitType
+pl/gr/veterinaryapp/model/entity/Animal.java
+ pl.gr.veterinaryapp.model.entity.Animal
+pl/gr/veterinaryapp/mapper/VetMapper.java
+ pl.gr.veterinaryapp.mapper.VetMapper
+pl/gr/veterinaryapp/controller/thyme/VisitThymeController.java
+ pl.gr.veterinaryapp.controller.thyme.VisitThymeController
+pl/gr/veterinaryapp/exception/handler/VetExceptionHandler.java
+ pl.gr.veterinaryapp.exception.handler.VetExceptionHandler
+pl/gr/veterinaryapp/service/VisitService.java
+ pl.gr.veterinaryapp.service.VisitService
+pl/gr/veterinaryapp/model/entity/Vet.java
+ pl.gr.veterinaryapp.model.entity.Vet
+pl/gr/veterinaryapp/controller/thyme/AnimalThymeController.java
+ pl.gr.veterinaryapp.controller.thyme.AnimalThymeController
+pl/gr/veterinaryapp/model/dto/AnimalRequestDto.java
+ pl.gr.veterinaryapp.model.dto.AnimalRequestDto
+pl/gr/veterinaryapp/service/impl/VisitServiceImpl.java
+ pl.gr.veterinaryapp.service.impl.VisitServiceImpl
+pl/gr/veterinaryapp/model/entity/Visit.java
+ pl.gr.veterinaryapp.model.entity.Visit
+pl/gr/veterinaryapp/service/impl/AnimalServiceImpl.java
+ pl.gr.veterinaryapp.service.impl.AnimalServiceImpl
+pl/gr/veterinaryapp/model/dto/VetRequestDto.java
+ pl.gr.veterinaryapp.model.dto.VetRequestDto
+pl/gr/veterinaryapp/repository/VisitRepository.java
+ pl.gr.veterinaryapp.repository.VisitRepository
+pl/gr/veterinaryapp/repository/AnimalRepository.java
+ pl.gr.veterinaryapp.repository.AnimalRepository
+pl/gr/veterinaryapp/service/AnimalService.java
+ pl.gr.veterinaryapp.service.AnimalService
+pl/gr/veterinaryapp/mapper/VisitMapper.java
+ pl.gr.veterinaryapp.mapper.VisitMapper
+pl/gr/veterinaryapp/model/dto/VisitRequestDto.java
+ pl.gr.veterinaryapp.model.dto.VisitRequestDto
+pl/gr/veterinaryapp/service/VetService.java
+ pl.gr.veterinaryapp.service.VetService
+pl/gr/veterinaryapp/controller/rest/AnimalRestController.java
+ pl.gr.veterinaryapp.controller.rest.AnimalRestController
+pl/gr/veterinaryapp/repository/VetRepository.java
+ pl.gr.veterinaryapp.repository.VetRepository
+pl/gr/veterinaryapp/common/OperationType.java
+ pl.gr.veterinaryapp.common.OperationType
