@@ -1,7 +1,7 @@
 # VeterinaryApp
 
-Simple VeterinaryApp built with usage of SpringMVC, SpringBoot, Hibernate.
-The application is created to learn the mentioned technologies.
+Simple VeterinaryApp built with usage of SpringMVC, SpringBoot, Hibernate.<br/>
+The application is created to learn the mentioned above technologies.
 
 ## Functionalities
 - Create Visit, Vet and Animal.
@@ -17,8 +17,8 @@ The application is created to learn the mentioned technologies.
 
 
 ## TODO
-[] - Deploy on Heroku.
-[] - Login panel using Spring Security.
-[] - Achieve 100% test coverage for controllers. 
+[] - Deploy on Heroku. <br/>
+[] - Login panel using Spring Security. <br/>
+[] - Achieve 100% test coverage for controllers. <br/>
 
  
