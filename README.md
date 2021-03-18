@@ -17,7 +17,7 @@ The application is created to learn the mentioned above technologies.
 
 
 ## TODO
-[] - Deploy on Heroku. <br/>
+[x] - Deploy on Heroku. - ON GITLAB FINISHED <br/>
 [] - Login panel using Spring Security. <br/>
 [] - Achieve 100% test coverage for controllers. <br/>
 
