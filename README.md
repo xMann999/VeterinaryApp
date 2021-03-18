@@ -5,6 +5,7 @@ The application is created to learn the mentioned above technologies.
 
 ## Functionalities
 - Create Visit, Vet and Animal.
+- Delete Visit, Vet and Animal.
 - Display all exisitng Visits, Animals, Vets using thymeleaf.
 - @ControllerAdvice to handling runtime errors.
 - Mapstruct to mapping entity to DTO.
