@@ -1,9 +1,10 @@
 package pl.gr.veterinaryapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import pl.gr.veterinaryapp.exception.FailedOperationException;
+import org.springframework.transaction.annotation.Transactional;
+import pl.gr.veterinaryapp.exception.IncorrectDataException;
+import pl.gr.veterinaryapp.exception.ResourceNotFoundException;
 import pl.gr.veterinaryapp.mapper.VetMapper;
 import pl.gr.veterinaryapp.model.dto.VetRequestDto;
 import pl.gr.veterinaryapp.model.entity.Vet;
@@ -19,25 +20,31 @@ public class VetServiceImpl implements VetService {
     private final VetRepository vetRepository;
     private final VetMapper mapper;
 
+    @Override
     public Vet getVetById(long id) {
         return vetRepository.findById(id)
-                .orElseThrow(() -> new FailedOperationException("Wrong id.", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Wrong id."));
     }
 
+    @Override
     public List<Vet> getAllVets() {
         return vetRepository.findAll();
     }
 
-    public Vet saveVet(VetRequestDto vetRequestDTO) {
+    @Transactional
+    @Override
+    public Vet createVet(VetRequestDto vetRequestDTO) {
         if (vetRequestDTO.getSurname() == null || vetRequestDTO.getName() == null) {
-            throw new FailedOperationException("Name and Surname should not be null.", HttpStatus.BAD_REQUEST);
+            throw new IncorrectDataException("Name and Surname cannot be null.");
         }
         return vetRepository.save(mapper.map(vetRequestDTO));
     }
 
+    @Transactional
+    @Override
     public void deleteVet(long id) {
         Vet result = vetRepository.findById(id)
-                .orElseThrow(() -> new FailedOperationException("Wrong id.", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Wrong id."));
         vetRepository.delete(result);
     }
 }

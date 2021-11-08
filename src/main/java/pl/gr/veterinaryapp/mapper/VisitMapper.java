@@ -14,13 +14,10 @@ public interface VisitMapper {
 
     @Mappings({
             @Mapping(source = "vet.id", target = "vetId"),
-            @Mapping(source = "animal.id", target = "animalId")
+            @Mapping(source = "pet.id", target = "petId"),
+            @Mapping(source = "treatmentRoom.id", target = "treatmentRoomId")
     })
     VisitResponseDto map(Visit visit);
 
-    @Mappings({
-            @Mapping(source = "vet.id", target = "vetId"),
-            @Mapping(source = "animal.id", target = "animalId")
-    })
     List<VisitResponseDto> mapAsList(Collection<Visit> visit);
 }

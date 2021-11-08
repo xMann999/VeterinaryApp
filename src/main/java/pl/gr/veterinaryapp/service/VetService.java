@@ -11,7 +11,7 @@ public interface VetService {
 
     List<Vet> getAllVets();
 
-    Vet saveVet(VetRequestDto vetRequestDTO);
+    Vet createVet(VetRequestDto vetRequestDTO);
 
     void deleteVet(long id);
 }

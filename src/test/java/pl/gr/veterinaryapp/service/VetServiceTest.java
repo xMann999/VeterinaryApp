@@ -5,8 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import pl.gr.veterinaryapp.exception.FailedOperationException;
+import pl.gr.veterinaryapp.exception.IncorrectDataException;
+import pl.gr.veterinaryapp.exception.ResourceNotFoundException;
 import pl.gr.veterinaryapp.mapper.VetMapper;
 import pl.gr.veterinaryapp.model.dto.VetRequestDto;
 import pl.gr.veterinaryapp.model.entity.Vet;
@@ -24,23 +24,18 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class VetServiceTest {
 
+    private static final long VET_ID = 1L;
     @Mock
     private VetRepository vetRepository;
-
     @Mock
     private VetMapper mapper;
-
     @InjectMocks
     private VetServiceImpl vetService;
-
-
-    private static final long VET_ID = 1L;
 
     @Test
     void getVetById_WithCorrectId_Returned() {
@@ -56,26 +51,20 @@ public class VetServiceTest {
 
         verify(vetRepository).findById(eq(VET_ID));
         verifyNoInteractions(mapper);
-        verifyNoMoreInteractions(vetRepository);
     }
 
     @Test
     void getVetById_WithWrongId_ExceptionThrown() {
-
         when(vetRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        FailedOperationException thrown =
-                catchThrowableOfType(() -> vetService.getVetById(VET_ID), FailedOperationException.class);
+        ResourceNotFoundException thrown =
+                catchThrowableOfType(() -> vetService.getVetById(VET_ID), ResourceNotFoundException.class);
 
         assertThat(thrown)
                 .hasMessage("Wrong id.");
-        assertThat(thrown.getHttpStatus())
-                .isNotNull()
-                .isEqualTo(HttpStatus.NOT_FOUND);
 
         verify(vetRepository).findById(eq(VET_ID));
         verifyNoInteractions(mapper);
-        verifyNoMoreInteractions(vetRepository);
     }
 
     @Test
@@ -92,7 +81,6 @@ public class VetServiceTest {
 
         verify(vetRepository).findAll();
         verifyNoInteractions(mapper);
-        verifyNoMoreInteractions(vetRepository);
     }
 
     @Test
@@ -107,7 +95,7 @@ public class VetServiceTest {
         when(mapper.map(any(VetRequestDto.class))).thenReturn(vet);
         when(vetRepository.save(any(Vet.class))).thenReturn(vet);
 
-        var result = vetService.saveVet(request);
+        var result = vetService.createVet(request);
 
         assertThat(result)
                 .isNotNull()
@@ -115,7 +103,6 @@ public class VetServiceTest {
 
         verify(vetRepository).save(eq(vet));
         verify(mapper).map(request);
-        verifyNoMoreInteractions(mapper, vetRepository);
     }
 
     @Test
@@ -123,17 +110,13 @@ public class VetServiceTest {
         VetRequestDto request = new VetRequestDto();
         request.setSurname("test");
 
-        FailedOperationException thrown =
-                catchThrowableOfType(() -> vetService.saveVet(request), FailedOperationException.class);
+        IncorrectDataException thrown =
+                catchThrowableOfType(() -> vetService.createVet(request), IncorrectDataException.class);
 
         assertThat(thrown)
-                .hasMessage("Name and Surname should not be null.");
-        assertThat(thrown.getHttpStatus())
-                .isNotNull()
-                .isEqualTo(HttpStatus.BAD_REQUEST);
+                .hasMessage("Name and Surname cannot be null.");
 
-        verifyNoInteractions(mapper);
-        verifyNoMoreInteractions(vetRepository);
+        verifyNoInteractions(vetRepository, mapper);
     }
 
     @Test
@@ -141,14 +124,11 @@ public class VetServiceTest {
         VetRequestDto request = new VetRequestDto();
         request.setName("test");
 
-        FailedOperationException thrown =
-                catchThrowableOfType(() -> vetService.saveVet(request), FailedOperationException.class);
+        IncorrectDataException thrown =
+                catchThrowableOfType(() -> vetService.createVet(request), IncorrectDataException.class);
 
         assertThat(thrown)
-                .hasMessage("Name and Surname should not be null.");
-        assertThat(thrown.getHttpStatus())
-                .isNotNull()
-                .isEqualTo(HttpStatus.BAD_REQUEST);
+                .hasMessage("Name and Surname cannot be null.");
 
         verifyNoInteractions(mapper, vetRepository);
     }
@@ -157,31 +137,26 @@ public class VetServiceTest {
     void deleteVet_ExistsVet_Deleted() {
         Vet vet = new Vet();
 
-        when(vetRepository.findById(VET_ID)).thenReturn(Optional.of(vet));
+        when(vetRepository.findById(anyLong())).thenReturn(Optional.of(vet));
 
         vetService.deleteVet(VET_ID);
 
         verify(vetRepository).findById(eq(VET_ID));
         verify(vetRepository).delete(eq(vet));
-        verifyNoMoreInteractions(vetRepository);
         verifyNoInteractions(mapper);
     }
 
     @Test
     void deleteVet_VetNotFound_ThrownException() {
-        when(vetRepository.findById(VET_ID)).thenReturn(Optional.empty());
+        when(vetRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        FailedOperationException thrown =
-                catchThrowableOfType(() -> vetService.deleteVet(VET_ID), FailedOperationException.class);
+        ResourceNotFoundException thrown =
+                catchThrowableOfType(() -> vetService.deleteVet(VET_ID), ResourceNotFoundException.class);
 
         assertThat(thrown)
                 .hasMessage("Wrong id.");
-        assertThat(thrown.getHttpStatus())
-                .isNotNull()
-                .isEqualTo(HttpStatus.NOT_FOUND);
 
         verify(vetRepository).findById(eq(VET_ID));
-        verifyNoMoreInteractions(vetRepository);
         verifyNoInteractions(mapper);
     }
 }

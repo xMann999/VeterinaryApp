@@ -1,9 +1,10 @@
 package pl.gr.veterinaryapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import pl.gr.veterinaryapp.exception.FailedOperationException;
+import org.springframework.transaction.annotation.Transactional;
+import pl.gr.veterinaryapp.exception.IncorrectDataException;
+import pl.gr.veterinaryapp.exception.ResourceNotFoundException;
 import pl.gr.veterinaryapp.mapper.AnimalMapper;
 import pl.gr.veterinaryapp.model.dto.AnimalRequestDto;
 import pl.gr.veterinaryapp.model.entity.Animal;
@@ -19,27 +20,32 @@ public class AnimalServiceImpl implements AnimalService {
     private final AnimalRepository animalRepository;
     private final AnimalMapper mapper;
 
+    @Override
     public Animal getAnimalById(long id) {
         return animalRepository.findById(id)
-                .orElseThrow(() -> new FailedOperationException("Wrong id.", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Wrong id."));
     }
 
+    @Transactional
+    @Override
     public Animal createAnimal(AnimalRequestDto animalRequestDto) {
         var animal = animalRepository.findBySpecies(animalRequestDto.getSpecies());
-//        animal.ifPresent(s -> {
-//            throw new FailedOperationException("Species exists.", HttpStatus.BAD_REQUEST);});
         if (animal.isPresent()) {
-            throw new FailedOperationException("Species exists.", HttpStatus.BAD_REQUEST);
+            throw new IncorrectDataException("Species exists.");
         }
+
         return animalRepository.save(mapper.map(animalRequestDto));
     }
 
+    @Transactional
+    @Override
     public void deleteAnimal(long id) {
         Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new FailedOperationException("Wrong id.", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Wrong id."));
         animalRepository.delete(animal);
     }
 
+    @Override
     public List<Animal> getAllAnimals() {
         return animalRepository.findAll();
     }

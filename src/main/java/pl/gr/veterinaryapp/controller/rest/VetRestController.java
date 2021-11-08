@@ -22,13 +22,13 @@ public class VetRestController {
     private final VetService vetService;
 
     @GetMapping("/{id}")
-    public Vet getVet(@PathVariable int id) {
+    public Vet getVet(@PathVariable long id) {
         return vetService.getVetById(id);
     }
 
     @PostMapping
     public Vet addVet(@RequestBody VetRequestDto vetRequestDTO) {
-        return vetService.saveVet(vetRequestDTO);
+        return vetService.createVet(vetRequestDTO);
     }
 
     @GetMapping

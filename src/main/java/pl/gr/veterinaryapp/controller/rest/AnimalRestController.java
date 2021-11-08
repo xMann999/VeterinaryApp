@@ -22,17 +22,17 @@ public class AnimalRestController {
     private final AnimalService animalService;
 
     @GetMapping("/{id}")
-    public Animal getAnimalById(@PathVariable long id) {
+    public Animal getAnimal(@PathVariable long id) {
         return animalService.getAnimalById(id);
     }
 
     @PostMapping
-    public Animal addAnimal(@RequestBody AnimalRequestDto animalRequestDTO) {
+    public Animal createAnimal(@RequestBody AnimalRequestDto animalRequestDTO) {
         return animalService.createAnimal(animalRequestDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAnimalById(@PathVariable long id) {
+    public void delete(@PathVariable long id) {
         animalService.deleteAnimal(id);
     }
 
