@@ -1,17 +1,18 @@
 package pl.gr.veterinaryapp.service;
 
-import pl.gr.veterinaryapp.model.dto.AnimalRequestDto;
+import pl.gr.veterinaryapp.model.dto.AnimalDto;
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.entity.Animal;
 
 import java.util.List;
 
 public interface AnimalService {
 
-    Animal getAnimalById(long id);
+    AnimalDto getAnimalById(long id);
 
-    Animal createAnimal(AnimalRequestDto animalRequestDTO);
+    AnimalDto createAnimal(AnimalDto animalDTO);
 
-    void deleteAnimal(long id);
+    MessageDto deleteAnimal(long id);
 
-    List<Animal> getAllAnimals();
+    List<AnimalDto> getAllAnimals();
 }

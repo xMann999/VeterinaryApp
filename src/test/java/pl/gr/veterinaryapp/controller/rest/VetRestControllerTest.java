@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.gr.veterinaryapp.config.WebSecurityConfig;
 import pl.gr.veterinaryapp.jwt.JwtAuthenticationFilter;
 import pl.gr.veterinaryapp.model.dto.VetRequestDto;
+import pl.gr.veterinaryapp.model.dto.VetResponseDto;
 import pl.gr.veterinaryapp.model.entity.Vet;
 import pl.gr.veterinaryapp.service.VetService;
 
@@ -59,9 +60,9 @@ class VetRestControllerTest {
     void addVet_CorrectData_Created() throws Exception {
         OffsetTime workStartTime = OffsetTime.of(LocalTime.MIN, ZoneOffset.MIN);
         OffsetTime workEndTime = OffsetTime.of(LocalTime.MAX, ZoneOffset.MAX);
-        var vetRequest = prepareVetRequest(VET_NAME, VET_SURNAME, IMAGE_URL, workStartTime, workEndTime);
+        VetRequestDto vetRequest = prepareVetRequest(VET_NAME, VET_SURNAME, IMAGE_URL, workStartTime, workEndTime);
 
-        var vet = prepareVet(VET_NAME, VET_SURNAME, IMAGE_URL, workStartTime, workEndTime);
+        VetResponseDto vet = prepareVetResponse(VET_NAME, VET_SURNAME, workStartTime, workEndTime);
 
         when(vetService.createVet(any(VetRequestDto.class))).thenReturn(vet);
 
@@ -72,8 +73,7 @@ class VetRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(VET_NAME))
                 .andExpect(jsonPath("$.workStartTime").value(workStartTime.toString()))
-                .andExpect(jsonPath("$.workEndTime").value(workEndTime.toString()))
-                .andExpect(jsonPath("$.photoUrl").value(IMAGE_URL));
+                .andExpect(jsonPath("$.workEndTime").value(workEndTime.toString()));
 
         verify(vetService).createVet(vetRequest);
     }
@@ -84,7 +84,7 @@ class VetRestControllerTest {
         OffsetTime workStartTime = OffsetTime.of(LocalTime.MIN, ZoneOffset.MIN);
         OffsetTime workEndTime = OffsetTime.of(LocalTime.MAX, ZoneOffset.MAX);
 
-        var vet = prepareVet(VET_NAME, VET_SURNAME, IMAGE_URL, workStartTime, workEndTime);
+        VetResponseDto vet = prepareVetResponse(VET_NAME, VET_SURNAME, workStartTime, workEndTime);
 
         when(vetService.getVetById(anyLong())).thenReturn(vet);
 
@@ -93,7 +93,6 @@ class VetRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(VET_NAME))
                 .andExpect(jsonPath("$.surname").value(VET_SURNAME))
-                .andExpect(jsonPath("$.photoUrl").value(IMAGE_URL))
                 .andExpect(jsonPath("$.workStartTime").value(workStartTime.toString()))
                 .andExpect(jsonPath("$.workEndTime").value(workEndTime.toString()));
 
@@ -106,9 +105,9 @@ class VetRestControllerTest {
         OffsetTime workStartTime = OffsetTime.of(LocalTime.MIN, ZoneOffset.MIN);
         OffsetTime workEndTime = OffsetTime.of(LocalTime.MAX, ZoneOffset.MAX);
 
-        var vet = prepareVet(VET_NAME, VET_SURNAME, IMAGE_URL, workStartTime, workEndTime);
+        VetResponseDto vet = prepareVetResponse(VET_NAME, VET_SURNAME, workStartTime, workEndTime);
 
-        List<Vet> vets = List.of(vet, vet);
+        List<VetResponseDto> vets = List.of(vet, vet);
 
         when(vetService.getAllVets()).thenReturn(vets);
 
@@ -117,12 +116,10 @@ class VetRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].name").value(VET_NAME))
                 .andExpect(jsonPath("$.[0].surname").value(VET_SURNAME))
-                .andExpect(jsonPath("$.[0].photoUrl").value(IMAGE_URL))
                 .andExpect(jsonPath("$.[0].workStartTime").value(workStartTime.toString()))
                 .andExpect(jsonPath("$.[0].workEndTime").value(workEndTime.toString()))
                 .andExpect(jsonPath("$.[1].name").value(VET_NAME))
                 .andExpect(jsonPath("$.[1].surname").value(VET_SURNAME))
-                .andExpect(jsonPath("$.[1].photoUrl").value(IMAGE_URL))
                 .andExpect(jsonPath("$.[1].workStartTime").value(workStartTime.toString()))
                 .andExpect(jsonPath("$.[1].workEndTime").value(workEndTime.toString()));
 
@@ -150,5 +147,15 @@ class VetRestControllerTest {
         vetRequest.setWorkStartTime(workStartTime);
         vetRequest.setWorkEndTime(workEndTime);
         return vetRequest;
+    }
+
+    private VetResponseDto prepareVetResponse(String name, String surname, OffsetTime workStartTime,
+                                                 OffsetTime workEndTime) {
+        var vetResponse = new VetResponseDto();
+        vetResponse.setName(name);
+        vetResponse.setSurname(surname);
+        vetResponse.setWorkStartTime(workStartTime);
+        vetResponse.setWorkEndTime(workEndTime);
+        return vetResponse;
     }
 }

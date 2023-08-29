@@ -5,14 +5,9 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.gr.veterinaryapp.mapper.PetMapper;
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.dto.PetRequestDto;
 import pl.gr.veterinaryapp.model.dto.PetResponseDto;
 import pl.gr.veterinaryapp.service.PetService;
@@ -31,22 +26,22 @@ public class PetRestController {
     private final PetMapper mapper;
 
     @DeleteMapping(path = "/{id}")
-    public void delete(@PathVariable int id) {
-        petService.deletePet(id);
+    public MessageDto delete(@PathVariable int id) {
+        return petService.deletePet(id);
     }
 
     @GetMapping(path = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
     public PetResponseDto getPet(@AuthenticationPrincipal User user, @PathVariable long id) {
-        var pet = mapper.map(petService.getPetById(user, id));
+        PetResponseDto pet = mapper.map(petService.getPetById(user, id));
         addLinks(pet);
         return pet;
     }
 
     @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
     public List<PetResponseDto> getAllPets(@AuthenticationPrincipal User user) {
-        var pets = mapper.mapAsList(petService.getAllPets(user));
+        List<PetResponseDto> pets = mapper.mapAsList(petService.getAllPets(user));
 
-        for (var pet : pets) {
+        for (PetResponseDto pet : pets) {
             addLinks(pet);
             var link = linkTo(methodOn(PetRestController.class).getPet(user, pet.getId()))
                     .withSelfRel();
@@ -60,7 +55,7 @@ public class PetRestController {
     public PetResponseDto createPet(@AuthenticationPrincipal User user, @RequestBody PetRequestDto petRequestDto) {
         System.out.println(user);
 
-        var pet = mapper.map(petService.createPet(user, petRequestDto));
+        PetResponseDto pet = mapper.map(petService.createPet(user, petRequestDto));
         addLinks(pet);
         return pet;
     }

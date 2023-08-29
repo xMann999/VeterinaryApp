@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.gr.veterinaryapp.exception.IncorrectDataException;
 import pl.gr.veterinaryapp.exception.ResourceNotFoundException;
 import pl.gr.veterinaryapp.mapper.AnimalMapper;
-import pl.gr.veterinaryapp.model.dto.AnimalRequestDto;
+import pl.gr.veterinaryapp.model.dto.AnimalDto;
 import pl.gr.veterinaryapp.model.entity.Animal;
 import pl.gr.veterinaryapp.repository.AnimalRepository;
 import pl.gr.veterinaryapp.service.impl.AnimalServiceImpl;
@@ -40,18 +40,21 @@ class AnimalServiceTest {
 
     @Test
     void getAnimalById_WithCorrectId_Returned() {
+        AnimalDto animalDto = new AnimalDto("CAT");
         Animal animal = new Animal();
+        animal.setSpecies("CAT");
 
+
+        when(mapper.toDto(animal)).thenReturn(animalDto);
         when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animal));
 
         var result = animalService.getAnimalById(ANIMAL_ID);
 
         assertThat(result)
                 .isNotNull()
-                .isEqualTo(animal);
+                .isEqualTo(animalDto);
 
         verify(animalRepository).findById(eq(ANIMAL_ID));
-        verifyNoInteractions(mapper);
     }
 
     @Test
@@ -70,30 +73,28 @@ class AnimalServiceTest {
 
     @Test
     void createAnimal_NewAnimal_Created() {
-        AnimalRequestDto animalDTO = new AnimalRequestDto();
-        animalDTO.setSpecies("test");
+        AnimalDto animalDTO = new AnimalDto("test");
         Animal animal = new Animal();
         animal.setSpecies("test");
 
         when(animalRepository.findBySpecies(anyString())).thenReturn(Optional.empty());
-        when(mapper.map(any(AnimalRequestDto.class))).thenReturn(animal);
+        when(mapper.toEntity(any(AnimalDto.class))).thenReturn(animal);
         when(animalRepository.save(any(Animal.class))).thenReturn(animal);
 
         var result = animalService.createAnimal(animalDTO);
 
         assertThat(result)
                 .isNotNull()
-                .isEqualTo(animal);
+                .isEqualTo(animalDTO);
 
         verify(animalRepository).save(eq(animal));
         verify(animalRepository).findBySpecies(eq("test"));
-        verify(mapper).map(eq(animalDTO));
+        verify(mapper).toEntity(eq(animalDTO));
     }
 
     @Test
     void createAnimal_ExistsAnimal_ExceptionThrown() {
-        AnimalRequestDto animalDTO = new AnimalRequestDto();
-        animalDTO.setSpecies("test");
+        AnimalDto animalDTO = new AnimalDto("test");
         Animal animal = new Animal();
         animal.setSpecies("test");
 

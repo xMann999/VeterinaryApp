@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.gr.veterinaryapp.mapper.VetAppUserMapper;
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.dto.UserDto;
 import pl.gr.veterinaryapp.service.UserService;
 
@@ -33,8 +34,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id) {
-        userService.deleteUser(id);
+    public MessageDto deleteUser(@PathVariable long id) {
+        return userService.deleteUser(id);
     }
 
     @GetMapping("/{id}")

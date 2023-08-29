@@ -7,6 +7,7 @@ import pl.gr.veterinaryapp.common.VisitStatus;
 import pl.gr.veterinaryapp.model.entity.Visit;
 
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,4 +41,18 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
     List<Visit> findAllOverlappingInDateRange(
             OffsetDateTime startDateTime,
             OffsetDateTime endDateTime);
+
+    @Query("SELECT v FROM Visit v WHERE EXTRACT(YEAR FROM v.startDateTime) = ?1 AND EXTRACT(MONTH FROM v.startDateTime) = ?2")
+    List<Visit> findByYearAndMonth(int year, int month);
+
+    default List<Visit> findByYearAndMonth(YearMonth yearMonth) {
+        return findByYearAndMonth(yearMonth.getYear(), yearMonth.getMonthValue());
+    }
+
+    @Query("SELECT v FROM Visit v WHERE EXTRACT(YEAR FROM v.startDateTime) = ?1 AND EXTRACT(MONTH FROM v.startDateTime) = ?2 AND v.vet.id = ?3")
+    List<Visit> findByYearMonthAndVet(int year, int month, Long vetId);
+
+    default List<Visit> findByYearMonthAndVet(YearMonth yearMonth, Long vetId) {
+        return findByYearMonthAndVet(yearMonth.getYear(), yearMonth.getMonthValue(), vetId);
+    }
 }

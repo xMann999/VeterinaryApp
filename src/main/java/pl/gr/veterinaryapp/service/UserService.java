@@ -1,5 +1,6 @@
 package pl.gr.veterinaryapp.service;
 
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.dto.UserDto;
 import pl.gr.veterinaryapp.model.entity.VetAppUser;
 
@@ -13,5 +14,5 @@ public interface UserService {
 
     VetAppUser createUser(UserDto user);
 
-    void deleteUser(long id);
+    MessageDto deleteUser(long id);
 }
