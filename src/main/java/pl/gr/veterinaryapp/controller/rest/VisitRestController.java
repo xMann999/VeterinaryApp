@@ -6,20 +6,10 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.gr.veterinaryapp.mapper.VisitMapper;
-import pl.gr.veterinaryapp.model.dto.AvailableVisitDto;
-import pl.gr.veterinaryapp.model.dto.VisitEditDto;
-import pl.gr.veterinaryapp.model.dto.VisitRequestDto;
-import pl.gr.veterinaryapp.model.dto.VisitResponseDto;
+import pl.gr.veterinaryapp.model.dto.*;
+import pl.gr.veterinaryapp.model.entity.Visit;
 import pl.gr.veterinaryapp.service.VisitService;
 
 import java.time.OffsetDateTime;
@@ -41,13 +31,13 @@ public class VisitRestController {
     private final VisitMapper mapper;
 
     @DeleteMapping(path = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
-    public void delete(@PathVariable long id) {
-        visitService.deleteVisit(id);
+    public MessageDto delete(@PathVariable long id) {
+        return visitService.deleteVisit(id);
     }
 
     @GetMapping(path = "/{id}", produces = MediaTypes.HAL_JSON_VALUE)
     public VisitResponseDto getVisit(@AuthenticationPrincipal User user, @PathVariable long id) {
-        var visit = mapper.map(visitService.getVisitById(user, id));
+        VisitResponseDto visit = mapper.map(visitService.getVisitById(user, id));
         addLinks(visit);
         return visit;
     }
@@ -82,7 +72,7 @@ public class VisitRestController {
     public List<VisitResponseDto> getAllVisits(@AuthenticationPrincipal User user) {
         var visits = mapper.mapAsList(visitService.getAllVisits(user));
 
-        for (var visit : visits) {
+        for (VisitResponseDto visit : visits) {
             addLinks(visit);
             var link = linkTo(methodOn(VisitRestController.class).getVisit(user, visit.getId()))
                     .withSelfRel();
@@ -93,16 +83,15 @@ public class VisitRestController {
     }
 
     @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
-    public VisitResponseDto createVisit(@AuthenticationPrincipal User user,
-                                        @RequestBody VisitRequestDto visitRequestDto) {
-        var visit = mapper.map(visitService.createVisit(user, visitRequestDto));
+    public VisitResponseDto createVisit(@AuthenticationPrincipal User user, @RequestBody VisitRequestDto visitRequestDto) {
+        VisitResponseDto visit = mapper.map(visitService.createVisit(user, visitRequestDto));
         addLinks(visit);
         return visit;
     }
 
     @PatchMapping(produces = MediaTypes.HAL_JSON_VALUE)
     public VisitResponseDto finalizeVisit(@RequestBody VisitEditDto visitEditDto) {
-        var visit = mapper.map(visitService.finalizeVisit(visitEditDto));
+        VisitResponseDto visit = mapper.map(visitService.finalizeVisit(visitEditDto));
         addLinks(visit);
         return visit;
     }

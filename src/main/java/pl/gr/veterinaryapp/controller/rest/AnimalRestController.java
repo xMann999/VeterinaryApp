@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.gr.veterinaryapp.model.dto.AnimalRequestDto;
+import pl.gr.veterinaryapp.model.dto.AnimalDto;
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.entity.Animal;
 import pl.gr.veterinaryapp.service.AnimalService;
 
@@ -22,22 +23,22 @@ public class AnimalRestController {
     private final AnimalService animalService;
 
     @GetMapping("/{id}")
-    public Animal getAnimal(@PathVariable long id) {
+    public AnimalDto getAnimal(@PathVariable long id) {
         return animalService.getAnimalById(id);
     }
 
     @PostMapping
-    public Animal createAnimal(@RequestBody AnimalRequestDto animalRequestDTO) {
-        return animalService.createAnimal(animalRequestDTO);
+    public AnimalDto createAnimal(@RequestBody AnimalDto animalDTO) {
+        return animalService.createAnimal(animalDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable long id) {
-        animalService.deleteAnimal(id);
+    public MessageDto delete(@PathVariable long id) {
+        return animalService.deleteAnimal(id);
     }
 
     @GetMapping
-    public List<Animal> getAllAnimals() {
+    public List<AnimalDto> getAllAnimals() {
         return animalService.getAllAnimals();
     }
 }

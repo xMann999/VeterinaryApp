@@ -1,6 +1,7 @@
 package pl.gr.veterinaryapp.service;
 
 import org.springframework.security.core.userdetails.User;
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.dto.PetRequestDto;
 import pl.gr.veterinaryapp.model.entity.Pet;
 
@@ -12,7 +13,7 @@ public interface PetService {
 
     Pet createPet(User user, PetRequestDto petRequestDTO);
 
-    void deletePet(long id);
+    MessageDto deletePet(long id);
 
     List<Pet> getAllPets(User user);
 }

@@ -1,12 +1,15 @@
 package pl.gr.veterinaryapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.gr.veterinaryapp.exception.IncorrectDataException;
 import pl.gr.veterinaryapp.exception.ResourceNotFoundException;
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.dto.PetRequestDto;
 import pl.gr.veterinaryapp.model.entity.Animal;
 import pl.gr.veterinaryapp.model.entity.Client;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
@@ -29,6 +33,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public List<Pet> getAllPets(User user) {
+        log.trace("Fetching all pets");
         return petRepository.findAll()
                 .stream()
                 .filter(pet -> isUserAuthorized(user, pet.getClient()))
@@ -37,6 +42,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Pet getPetById(User user, long id) {
+        log.debug("Searching for pet with id: {}", id);
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Wrong id."));
 
@@ -50,6 +56,7 @@ public class PetServiceImpl implements PetService {
     @Transactional
     @Override
     public Pet createPet(User user, PetRequestDto petRequestDto) {
+        log.debug("Checking if the given data is correct");
         if (petRequestDto.getName() == null) {
             throw new IncorrectDataException("Name cannot be null.");
         }
@@ -67,6 +74,7 @@ public class PetServiceImpl implements PetService {
             throw new ResourceNotFoundException("User don't have access to this pet");
         }
 
+        log.debug("Saving a new pet: {}", petRequestDto);
         var newPet = new Pet();
         newPet.setName(petRequestDto.getName());
         newPet.setBirthDate(petRequestDto.getBirthDate());
@@ -78,10 +86,13 @@ public class PetServiceImpl implements PetService {
 
     @Transactional
     @Override
-    public void deletePet(long id) {
+    public MessageDto deletePet(long id) {
+        log.debug("Searching for pet with id: {}", id);
         Pet result = petRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Wrong id."));
+        log.debug("Attempting to delete pet with id: {}", id);
         petRepository.delete(result);
+        return new MessageDto(HttpStatus.OK, "Resource has been successfully removed");
     }
 
     private boolean isUserAuthorized(User user, Client client) {

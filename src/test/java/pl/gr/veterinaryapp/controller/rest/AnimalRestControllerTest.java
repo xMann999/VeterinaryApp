@@ -13,7 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.gr.veterinaryapp.config.WebSecurityConfig;
 import pl.gr.veterinaryapp.jwt.JwtAuthenticationFilter;
-import pl.gr.veterinaryapp.model.dto.AnimalRequestDto;
+import pl.gr.veterinaryapp.model.dto.AnimalDto;
 import pl.gr.veterinaryapp.model.entity.Animal;
 import pl.gr.veterinaryapp.service.AnimalService;
 
@@ -52,38 +52,35 @@ class AnimalRestControllerTest {
     @Test
     @WithMockUser
     void addAnimal_CorrectData_Created() throws Exception {
-        AnimalRequestDto animalRequest = new AnimalRequestDto();
-        animalRequest.setSpecies(SPECIES);
+        AnimalDto animalDto = createNewAnimalDto("DOG");
 
-        Animal animal = new Animal();
-        animal.setSpecies(animalRequest.getSpecies());
-
-        when(animalService.createAnimal(any(AnimalRequestDto.class))).thenReturn(animal);
+        when(animalService.createAnimal(any(AnimalDto.class))).thenReturn(animalDto);
 
         mockMvc.perform(post("/api/animals")
                 .with(csrf())
-                .content(objectMapper.writeValueAsString(animalRequest))
+                .content(objectMapper.writeValueAsString(animalDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.species").value(SPECIES));
 
-        verify(animalService).createAnimal(animalRequest);
+        verify(animalService).createAnimal(animalDto);
     }
 
     @Test
     @WithMockUser
     void getAnimal_CorrectData_Created() throws Exception {
+        AnimalDto animalDto = createNewAnimalDto(SPECIES);
+
         Animal animal = new Animal();
         animal.setSpecies(SPECIES);
         animal.setId(ID);
 
-        when(animalService.getAnimalById(anyLong())).thenReturn(animal);
+        when(animalService.getAnimalById(anyLong())).thenReturn(animalDto);
 
         mockMvc.perform(get("/api/animals/{id}", ID)
                 .content(objectMapper.writeValueAsString(animal))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(ID))
                 .andExpect(jsonPath("$.species").value(SPECIES));
 
         verify(animalService).getAnimalById(1);
@@ -92,8 +89,8 @@ class AnimalRestControllerTest {
     @Test
     @WithMockUser
     void getAllAnimals_CorrectData_Returned() throws Exception {
-        List<Animal> animals = List.of(createNewAnimal("CAT"),
-                createNewAnimal("DOG"));
+        List<AnimalDto> animals = List.of(createNewAnimalDto("CAT"),
+                createNewAnimalDto("DOG"));
 
         when(animalService.getAllAnimals()).thenReturn(animals);
 
@@ -110,5 +107,9 @@ class AnimalRestControllerTest {
         var animal = new Animal();
         animal.setSpecies(species);
         return animal;
+    }
+
+    private AnimalDto createNewAnimalDto(String species) {
+        return new AnimalDto(species);
     }
 }

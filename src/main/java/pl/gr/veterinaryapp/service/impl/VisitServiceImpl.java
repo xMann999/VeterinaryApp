@@ -1,6 +1,8 @@
 package pl.gr.veterinaryapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -10,6 +12,7 @@ import pl.gr.veterinaryapp.common.VisitStatus;
 import pl.gr.veterinaryapp.exception.IncorrectDataException;
 import pl.gr.veterinaryapp.exception.ResourceNotFoundException;
 import pl.gr.veterinaryapp.model.dto.AvailableVisitDto;
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.dto.VisitEditDto;
 import pl.gr.veterinaryapp.model.dto.VisitRequestDto;
 import pl.gr.veterinaryapp.model.entity.Client;
@@ -35,9 +38,10 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class VisitServiceImpl implements VisitService {
 
-    private static final int MINIMAL_TIME_TO_VISIT = 60;
+    private static final int MINIMAL_TIME_TO_VISIT = 30;
 
     private final VisitRepository visitRepository;
     private final VetRepository vetRepository;
@@ -106,6 +110,7 @@ public class VisitServiceImpl implements VisitService {
     }
 
     private void validateVisitDate(long vetId, OffsetDateTime startDateTime, Duration duration) {
+        log.debug("Validating visit date");
         var nowZoned = OffsetDateTime.now(systemClock);
 
         if (startDateTime.isBefore(nowZoned)) {
@@ -142,10 +147,12 @@ public class VisitServiceImpl implements VisitService {
     public Visit finalizeVisit(VisitEditDto visitEditDto) {
         Visit visit = visitRepository.findById(visitEditDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Wrong id."));
-        if (visitEditDto.getVisitStatus() == VisitStatus.FINISHED
-                || visitEditDto.getVisitStatus() == VisitStatus.DID_NOT_APPEAR
-                || visitEditDto.getVisitStatus() == VisitStatus.CANCELLED) {
-            visit.setVisitStatus(visitEditDto.getVisitStatus());
+        switch (visitEditDto.getVisitStatus()) {
+            case CANCELLED:
+            case FINISHED:
+            case DID_NOT_APPEAR:
+                visit.setVisitStatus(visitEditDto.getVisitStatus());
+                break;
         }
         visit.setVisitDescription(visitEditDto.getDescription());
         return visit;
@@ -153,10 +160,13 @@ public class VisitServiceImpl implements VisitService {
 
     @Transactional
     @Override
-    public void deleteVisit(long id) {
+    public MessageDto deleteVisit(long id) {
+        log.debug("Searching for visit with id: {}", id);
         Visit result = visitRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Wrong id."));
+        log.debug("Trying to delete visit with id: {}", id);
         visitRepository.delete(result);
+        return new MessageDto(HttpStatus.OK, "Visit has been successfully removed");
     }
 
     @Transactional
@@ -239,6 +249,7 @@ public class VisitServiceImpl implements VisitService {
     }
 
     private boolean isUserAuthorized(User user, Client client) {
+        log.debug("Checking if user {} is authorized", user.getUsername());
         boolean isClient = user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
@@ -250,6 +261,7 @@ public class VisitServiceImpl implements VisitService {
                 return client.getUser().getUsername().equalsIgnoreCase(user.getUsername());
             }
         }
+        log.debug("Authorization passed for user {}", user.getUsername());
         return true;
     }
 

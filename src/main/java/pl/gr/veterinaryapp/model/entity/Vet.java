@@ -1,6 +1,7 @@
 package pl.gr.veterinaryapp.model.entity;
 
 import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class Vet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Getter
     @NotNull
     private String name;
     @NotNull
@@ -28,4 +30,8 @@ public class Vet {
     private OffsetTime workStartTime;
     @NotNull
     private OffsetTime workEndTime;
+
+    public String getNameAndSurname() {
+        return this.getName() + " " + this.getSurname();
+    }
 }

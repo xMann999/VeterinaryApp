@@ -2,10 +2,8 @@ package pl.gr.veterinaryapp.controller.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 import pl.gr.veterinaryapp.common.AuthToken;
 import pl.gr.veterinaryapp.model.dto.LoginUser;
 import pl.gr.veterinaryapp.service.impl.TokenServiceImpl;
@@ -20,6 +18,7 @@ import static pl.gr.veterinaryapp.common.TokenConstants.AUTH_HEADER_NAME;
 public class AuthenticationController {
 
     private final TokenServiceImpl tokenService;
+    private final BCryptPasswordEncoder encoder;
 
     @PostMapping("/login")
     public AuthToken register(@RequestBody LoginUser loginUser) throws AuthenticationException {
@@ -30,5 +29,10 @@ public class AuthenticationController {
     public void logout(HttpServletRequest req) {
         String tokenHeader = req.getHeader(AUTH_HEADER_NAME);
         tokenService.logout(tokenHeader);
+    }
+
+    @GetMapping("/encode")
+    public String encode(@RequestBody String password) {
+        return tokenService.encode(password);
     }
 }

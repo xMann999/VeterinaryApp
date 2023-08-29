@@ -527,16 +527,16 @@ class VisitServiceTest {
 
     @Test
     void createVisit_WithWrongVetWorkTime_ExceptionThrown() {
-        OffsetDateTime startDateTime = OffsetDateTime.now(fixedClock).plusDays(1);
-        Duration duration = Duration.ofMinutes(30);
+        OffsetDateTime startDateTime = OffsetDateTime.now(fixedClock).plusDays(2);
+        Duration duration = Duration.ofMinutes(60);
 
         VisitRequestDto request = prepareVisitRequestDto(startDateTime, duration);
 
         var treatmentRoom = new TreatmentRoom();
         var pet = new Pet();
         var vet = new Vet();
-        vet.setWorkStartTime(OffsetTime.of(13,0,0,0,ZoneOffset.UTC));
-        vet.setWorkEndTime(OffsetTime.of(14,0,0,0,ZoneOffset.UTC));
+        vet.setWorkStartTime(OffsetTime.of(12,0,0,0,ZoneOffset.UTC));
+        vet.setWorkEndTime(OffsetTime.of(13,0,0,0,ZoneOffset.UTC));
 
 
         when(vetRepository.findById(anyLong())).thenReturn(Optional.of(vet));

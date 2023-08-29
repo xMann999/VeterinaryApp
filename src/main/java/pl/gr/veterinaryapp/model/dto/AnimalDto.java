@@ -3,7 +3,7 @@ package pl.gr.veterinaryapp.model.dto;
 import lombok.Data;
 
 @Data
-public class AnimalRequestDto {
+public class AnimalDto {
 
-    private String species;
+    private final String species;
 }

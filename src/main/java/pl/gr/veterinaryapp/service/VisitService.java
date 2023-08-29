@@ -2,6 +2,7 @@ package pl.gr.veterinaryapp.service;
 
 import org.springframework.security.core.userdetails.User;
 import pl.gr.veterinaryapp.model.dto.AvailableVisitDto;
+import pl.gr.veterinaryapp.model.dto.MessageDto;
 import pl.gr.veterinaryapp.model.dto.VisitEditDto;
 import pl.gr.veterinaryapp.model.dto.VisitRequestDto;
 import pl.gr.veterinaryapp.model.entity.Visit;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public interface VisitService {
 
-    void deleteVisit(long id);
+    MessageDto deleteVisit(long id);
 
     List<Visit> getAllVisits(User user);
 

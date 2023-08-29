@@ -88,5 +88,9 @@ public class TokenServiceImpl implements TokenService {
     public void checkExpiredVisits() {
         blockedTokenRepository.deleteAllByExpirationTimeBefore(OffsetDateTime.now(systemClock));
     }
+
+    public String encode(String password) {
+        return bcryptEncoder.encode(password);
+    }
 }
 
