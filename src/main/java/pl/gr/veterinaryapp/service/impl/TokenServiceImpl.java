@@ -44,6 +44,7 @@ public class TokenServiceImpl implements TokenService {
     private final Clock systemClock;
 
     public AuthToken register(@RequestBody LoginUser loginUser) {
+        System.out.println("ddddD");
         var user = userRepository.findByUsername(loginUser.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password."));
         if (!bcryptEncoder.matches(loginUser.getPassword(), user.getPassword())) {

@@ -1,5 +1,6 @@
 package pl.gr.veterinaryapp.controller.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import java.util.List;
 public class AnimalRestController {
 
     private final AnimalService animalService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/{id}")
     public Animal getAnimal(@PathVariable long id) {
